@@ -14,7 +14,7 @@ from tqdm import tqdm
 # Configurations
 @dataclass
 class ModelConfig:
-    block_size: int = 1024
+    block_size: int = 512
     vocab_size: int = 50304
     n_layer: int = 12
     n_head: int = 12
@@ -24,7 +24,8 @@ class ModelConfig:
 
 @dataclass
 class TrainConfig:
-    batch_size: int = 64
+    batch_size: int = 12
+    gradient_accumulation_steps: int = 5
     learning_rate: float = 6e-4
     max_iters: int = 10000
     lr_decay_iters: int = 10000
@@ -187,6 +188,10 @@ def main():
     # Initialize wandb
     wandb.init(project="shakespeare-gpt", name="124M-model")
     
+    # Set memory efficiency
+    torch.backends.cuda.matmul.allow_tf32 = True
+    torch.backends.cudnn.allow_tf32 = True
+    
     # Configurations
     model_config = ModelConfig()
     train_config = TrainConfig()
@@ -222,6 +227,7 @@ def main():
     
     # Training loop
     best_val_loss = float('inf')
+    accumulated_loss = 0
     
     for iter in range(train_config.max_iters):
         lr = get_lr(iter, train_config)
@@ -256,19 +262,26 @@ def main():
             
             model.train()
         
-        X, Y = get_batch(data_dict, train_config, model_config.block_size, split='train')
-        X, Y = X.to(device), Y.to(device)
-        
-        logits, loss = model(X, Y)
+        # Gradient accumulation loop
         optimizer.zero_grad(set_to_none=True)
-        loss.backward()
+        accumulated_loss = 0
+        
+        for _ in range(train_config.gradient_accumulation_steps):
+            X, Y = get_batch(data_dict, train_config, model_config.block_size, split='train')
+            X, Y = X.to(device), Y.to(device)
+            
+            logits, loss = model(X, Y)
+            loss = loss / train_config.gradient_accumulation_steps  # Scale loss
+            loss.backward()
+            accumulated_loss += loss.item() * train_config.gradient_accumulation_steps
+        
         torch.nn.utils.clip_grad_norm_(model.parameters(), train_config.grad_clip)
         optimizer.step()
         
         if iter % train_config.log_interval == 0:
             wandb.log({
                 'iter': iter,
-                'train_loss': loss.item(),
+                'train_loss': accumulated_loss,
                 'lr': lr
             })
             
