@@ -1,6 +1,13 @@
 # Shakespeare GPT
 
-A decoder-only transformer model (124M parameters) trained on Shakespeare's works, achieving a loss < 0.1.
+A decoder-only transformer model (124M parameters) trained on Shakespeare's works. The model achieved a minimum loss of 0.156 after training on an NVIDIA L4 GPU.
+
+## Training Results
+
+- Best validation loss: 0.156
+- Training environment: Lightning.ai Studio with NVIDIA L4 GPU
+- Training visualizations: [Weights & Biases Dashboard](https://wandb.ai/macharlasaiteja/shakespeare-gpt/runs/obtjc8b5?nw=nwusermacharlasaiteja)
+- Model weights and code: [Lightning.ai Studio](https://lightning.ai//era/studios/era-session-12/code?turnOn=true)
 
 ## Model Architecture
 
@@ -14,12 +21,18 @@ A decoder-only transformer model (124M parameters) trained on Shakespeare's work
 
 ## Training Configuration
 
-- Batch size: 64
+- Batch size: 12 (effective batch size: 60 with gradient accumulation)
+- Gradient accumulation steps: 5
 - Learning rate: 6e-4 with cosine decay
 - Training iterations: 10,000
 - Warmup steps: 1,000
 - Gradient clipping: 1.0
 - AdamW optimizer (β1=0.9, β2=0.95)
+- Memory optimizations:
+  - TF32 enabled
+  - Reduced sequence length (512)
+  - Gradient accumulation
+  - Optimized batch size
 
 ## Setup
 
@@ -89,16 +102,9 @@ The script saves:
 4. The app will automatically deploy and be available at:
    `https://huggingface.co/spaces/[YOUR_USERNAME]/[SPACE_NAME]`
 
-## Sample Outputs
-
-[Add screenshots and sample outputs from your trained model here]
-
-## Training Logs
-
-[Add key training metrics and logs here]
-
 ## Links
 
-- [GitHub Repository](https://github.com/[YOUR_USERNAME]/shakespeare-gpt)
-- [Hugging Face Space](https://huggingface.co/spaces/[YOUR_USERNAME]/shakespeare-gpt)
-- [Training Logs on Weights & Biases](https://wandb.ai/[YOUR_USERNAME]/shakespeare-gpt) 
+- Training Dashboard: [Weights & Biases](https://wandb.ai/macharlasaiteja/shakespeare-gpt/runs/obtjc8b5?nw=nwusermacharlasaiteja)
+- Model & Code: [Lightning.ai Studio](https://lightning.ai//era/studios/era-session-12/code?turnOn=true)
+- GitHub Repository: [shakespeare-gpt](https://github.com/[YOUR_USERNAME]/shakespeare-gpt)
+- Hugging Face Space: [Demo App](https://huggingface.co/spaces/[YOUR_USERNAME]/shakespeare-gpt) 
