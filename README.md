@@ -7,7 +7,7 @@ A decoder-only transformer model (124M parameters) trained on Shakespeare's work
 - Best validation loss: 0.156
 - Training environment: Lightning.ai Studio with NVIDIA L4 GPU
 - Training visualizations: [Weights & Biases Dashboard](https://wandb.ai/macharlasaiteja/shakespeare-gpt/runs/obtjc8b5?nw=nwusermacharlasaiteja)
-- Model weights and code: [Lightning.ai Studio](https://lightning.ai//era/studios/era-session-12/code?turnOn=true)
+- Model weights and code: [Lightning.ai Studio](https://lightning.ai/saitej/era/studios/era-session-12/code)
 
 ## Model Architecture
 
