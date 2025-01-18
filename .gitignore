@@ -6,3 +6,4 @@ wandb/
 *.pt
 !checkpoint_6000.pt
 .DS_Store
+CodeFiles/
