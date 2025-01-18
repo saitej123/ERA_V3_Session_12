@@ -1,3 +1,8 @@
-CodeFiles/
-*.pyc
+__pycache__/
+*.py[cod]
+*$py.class
+.env
 wandb/
+*.pt
+!checkpoint_6000.pt
+.DS_Store
