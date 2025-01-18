@@ -7,7 +7,7 @@ from train import GPT, ModelConfig
 def load_model():
     config = ModelConfig()
     model = GPT(config)
-    checkpoint = torch.load('best_model.pt', map_location='cpu')
+    checkpoint = torch.load('checkpoint_6000.pt', map_location='cpu')
     model.state_dict = checkpoint['model_state_dict']
     model.eval()
     return model
