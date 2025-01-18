@@ -1,0 +1,3 @@
+CodeFiles/
+*.pyc
+wandb/
