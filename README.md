@@ -1,13 +1,26 @@
+---
+title: Shakespeare GPT
+emoji: 🎭
+colorFrom: indigo
+colorTo: purple
+sdk: gradio
+sdk_version: "4.19.2"
+app_file: app.py
+pinned: false
+---
+
 # Shakespeare GPT
 
 A decoder-only transformer model (124M parameters) trained on Shakespeare's works. The model achieved a minimum loss of 0.156 after training on an NVIDIA L4 GPU.
+
+🎭 **Try it out**: [Shakespeare GPT Space](https://huggingface.co/spaces/Saiteja/shakespeare-gpt)
 
 ## Training Results
 
 - Best validation loss: 0.156
 - Training environment: Lightning.ai Studio with NVIDIA L4 GPU
 - Training visualizations: [Weights & Biases Dashboard](https://wandb.ai/macharlasaiteja/shakespeare-gpt/runs/obtjc8b5?nw=nwusermacharlasaiteja)
-- Model weights and code: [Lightning.ai Studio](https://lightning.ai/saitej/era/studios/era-session-12/code)
+- Model weights and code: [Lightning.ai Studio](https://lightning.ai//era/studios/era-session-12/code?turnOn=true)
 
 ## Model Architecture
 
@@ -107,4 +120,4 @@ The script saves:
 - Training Dashboard: [Weights & Biases](https://wandb.ai/macharlasaiteja/shakespeare-gpt/runs/obtjc8b5?nw=nwusermacharlasaiteja)
 - Model & Code: [Lightning.ai Studio](https://lightning.ai//era/studios/era-session-12/code?turnOn=true)
 - GitHub Repository: [shakespeare-gpt](https://github.com/[YOUR_USERNAME]/shakespeare-gpt)
-- Hugging Face Space: [Demo App](https://huggingface.co/spaces/[YOUR_USERNAME]/shakespeare-gpt) 
+- Live Demo: [Shakespeare GPT Space](https://huggingface.co/spaces/Saiteja/shakespeare-gpt) 
