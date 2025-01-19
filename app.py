@@ -10,15 +10,20 @@ from train import GPT, ModelConfig
 
 # Load the model
 def load_model():
+    # Set device
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(f"Using device: {device}")
+    
     config = ModelConfig()
     model = GPT(config)
-    checkpoint = torch.load('checkpoint_6000.pt', map_location='cpu')
+    checkpoint = torch.load('checkpoint_3000.pt', map_location=device)
     model.load_state_dict(checkpoint['model_state_dict'])
+    model.to(device)
     model.eval()
-    return model
+    return model, device
 
-# Cache the model to avoid reloading
-MODEL = load_model()
+# Cache the model and device to avoid reloading
+MODEL, DEVICE = load_model()
 TOKENIZER = tiktoken.get_encoding("gpt2")
 VOCAB_SIZE = TOKENIZER.n_vocab
 
@@ -29,7 +34,7 @@ def generate_text(
     top_k: int = 50
 ) -> str:
     """Generate Shakespeare-style text from a prompt."""
-    input_ids = torch.tensor([TOKENIZER.encode(prompt)], dtype=torch.long)
+    input_ids = torch.tensor([TOKENIZER.encode(prompt)], dtype=torch.long, device=DEVICE)
     
     with torch.no_grad():
         output_ids = MODEL.generate(
@@ -55,7 +60,7 @@ with Blocks(
         
         Generate Shakespeare-style text using a 124M parameter GPT model trained on Shakespeare's works.
         
-        The model was trained on an NVIDIA L4 GPU and achieved a validation loss of 0.156.
+        The model was trained on an NVIDIA L40S GPU and achieved a training loss of 0.064.
         """
     )
     
@@ -135,8 +140,8 @@ with Blocks(
         - Flash attention
         - 124M parameters
         
-        [View Model Training Logs](https://wandb.ai/macharlasaiteja/shakespeare-gpt/runs/obtjc8b5) | 
-        [View Source Code](https://lightning.ai//era/studios/era-session-12/code)
+        [View Model Training Logs](https://wandb.ai/macharlasaiteja/shakespeare-gpt/runs/3pr6gpfk?nw=nwusermacharlasaiteja) | 
+        [View Source Code](https://lightning.ai/saitej/era/studios/era-session-12/web-ui)
         """
     )
 
