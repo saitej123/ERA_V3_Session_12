@@ -5,28 +5,58 @@ from gradio.helpers import Examples
 from gradio.components.markdown import Markdown
 from gradio.layouts import Row, Column
 import torch
+import torch.nn as nn
+import torch.ao.quantization
 import tiktoken
 from train import GPT, ModelConfig
 import os
 
-def load_model(checkpoint_path='checkpoint_3000.pt'):
-    """Load the model for inference"""
+def create_quantized_model():
+    """Create a quantized model architecture"""
+    config = ModelConfig()
+    model = GPT(config)
+    
+    # Use dynamic quantization for linear layers only
+    model = torch.ao.quantization.quantize_dynamic(
+        model,
+        {torch.nn.Linear},  # Only quantize linear layers
+        dtype=torch.qint8
+    )
+    return model
+
+# Load the model
+def load_model():
     # Set device
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
     
-    # Initialize model
-    config = ModelConfig()
-    model = GPT(config)
+    # Load quantized model
+    if not os.path.exists('quantized_model.pt'):
+        raise FileNotFoundError(
+            "Quantized model not found! Please run quantize_model.py first."
+        )
     
-    # Load checkpoint
-    print("Loading model...")
-    checkpoint = torch.load(checkpoint_path, map_location=device)
-    model.load_state_dict(checkpoint['model_state_dict'])
-    
-    model.to(device)
-    model.eval()
-    return model, device
+    print("Loading quantized model...")
+    try:
+        checkpoint = torch.load('quantized_model.pt', map_location=device)
+        
+        if device == "cpu":
+            # For CPU, load the quantized model
+            model = create_quantized_model()
+            model.load_state_dict(checkpoint['state_dict'])
+        else:
+            # For GPU, load the regular model since quantization is CPU-only
+            config = ModelConfig()
+            model = GPT(config)
+            model.load_state_dict(checkpoint['state_dict'])
+        
+        model.to(device)
+        model.eval()
+        return model, device
+        
+    except Exception as e:
+        print(f"Error loading model: {e}")
+        raise
 
 # Cache the model and device to avoid reloading
 MODEL, DEVICE = load_model()
@@ -54,7 +84,7 @@ def generate_text(
     valid_tokens = [token for token in output_ids.tolist() if token < VOCAB_SIZE]
     return TOKENIZER.decode(valid_tokens)
 
-# Create a modern Gradio interface using Blocks
+# Create a more modern Gradio interface using Blocks
 with Blocks(
     title="Shakespeare GPT",
     theme=gr_themes.Soft(),
@@ -64,9 +94,9 @@ with Blocks(
         """
         # 🎭 Shakespeare GPT
         
-        Generate Shakespeare-style text using a 124M parameter GPT model trained on Shakespeare's works.
+        Generate Shakespeare-style text using a quantized 124M parameter GPT model trained on Shakespeare's works.
         
-        The model was trained on an NVIDIA L40S GPU and achieved a training loss of 0.064.
+        The model was trained on an NVIDIA L40S GPU and achieved a training loss of 0.064. Model is quantized to 8-bit for efficient deployment.
         """
     )
     
@@ -152,4 +182,4 @@ with Blocks(
     )
 
 if __name__ == "__main__":
-    demo.queue().launch(share=True) 
+    demo.queue().launch() 

@@ -17,12 +17,12 @@ A decoder-only transformer model (124M parameters) trained on Shakespeare's work
 
 ## Training Results
 
-![Training Loss](trainloss.png)
+![Training Loss](Images/trainloss.png)
 
 Experiments🧮
 
 
-![All Runs Summary](loss_2.png)
+![All Runs Summary](Images/loss_2.png)
 
 - Best training loss: 0.064
 - Training environment: Lightning.ai Studio with NVIDIA L40S GPU
@@ -122,6 +122,14 @@ The script saves:
    - Example prompts from Shakespeare's works
    - Real-time text generation
 
+
+## Gradio Demo
+
+https://00ed04a5c64902bf3f.gradio.live/
+
+![Gradio Live Demo](Images/gradio_live.png)
+
+### HF spaces not accepting model weights more than 1GB for hosting in free tier
 
 
 ## Links
