@@ -11,16 +11,18 @@ pinned: false
 
 # Shakespeare GPT
 
-A decoder-only transformer model (124M parameters) trained on Shakespeare's works. The model achieved a minimum loss of 0.156 after training on an NVIDIA L4 GPU.
+A decoder-only transformer model (124M parameters) trained on Shakespeare's works. The model achieved a minimum loss of 0.064 after training on an NVIDIA L40S GPU.
 
 🎭 **Try it out**: [Shakespeare GPT Space](https://huggingface.co/spaces/Saiteja/shakespeare-gpt)
 
 ## Training Results
 
-- Best validation loss: 0.156
-- Training environment: Lightning.ai Studio with NVIDIA L4 GPU
-- Training visualizations: [Weights & Biases Dashboard](https://wandb.ai/macharlasaiteja/shakespeare-gpt/runs/obtjc8b5?nw=nwusermacharlasaiteja)
-- Model weights and code: [Lightning.ai Studio](https://lightning.ai//era/studios/era-session-12/code?turnOn=true)
+![Training Loss](https://i.imgur.com/YOUR_IMAGE_ID.png)
+
+- Best training loss: 0.064
+- Training environment: Lightning.ai Studio with NVIDIA L40S GPU
+- Training visualizations: [Weights & Biases Dashboard](https://wandb.ai/macharlasaiteja/shakespeare-gpt/runs/3pr6gpfk?nw=nwusermacharlasaiteja)
+- Model weights and code: [Lightning.ai Studio](https://lightning.ai/saitej/era/studios/era-session-12/web-ui)
 
 ## Model Architecture
 
@@ -34,8 +36,8 @@ A decoder-only transformer model (124M parameters) trained on Shakespeare's work
 
 ## Training Configuration
 
-- Batch size: 12 (effective batch size: 60 with gradient accumulation)
-- Gradient accumulation steps: 5
+- Batch size: 48 (optimized for L40S GPU)
+- Gradient accumulation steps: 1
 - Learning rate: 6e-4 with cosine decay
 - Training iterations: 10,000
 - Warmup steps: 1,000
@@ -44,8 +46,7 @@ A decoder-only transformer model (124M parameters) trained on Shakespeare's work
 - Memory optimizations:
   - TF32 enabled
   - Reduced sequence length (512)
-  - Gradient accumulation
-  - Optimized batch size
+  - Optimized batch size for L40S
 
 ## Setup
 
@@ -79,9 +80,9 @@ The script will:
 
 Visit your Weights & Biases dashboard to monitor:
 - Training loss
-- Validation loss
 - Learning rate schedule
 - Generated text samples
+- Hardware utilization metrics
 
 ## Checkpoints
 
@@ -117,7 +118,6 @@ The script saves:
 
 ## Links
 
-- Training Dashboard: [Weights & Biases](https://wandb.ai/macharlasaiteja/shakespeare-gpt/runs/obtjc8b5?nw=nwusermacharlasaiteja)
-- Model & Code: [Lightning.ai Studio](https://lightning.ai//era/studios/era-session-12/code?turnOn=true)
-- GitHub Repository: [shakespeare-gpt](https://github.com/[YOUR_USERNAME]/shakespeare-gpt)
+- Training Dashboard: [Weights & Biases](https://wandb.ai/macharlasaiteja/shakespeare-gpt/runs/3pr6gpfk?nw=nwusermacharlasaiteja)
+- Model & Code: [Lightning.ai Studio](https://lightning.ai/saitej/era/studios/era-session-12/web-ui)
 - Live Demo: [Shakespeare GPT Space](https://huggingface.co/spaces/Saiteja/shakespeare-gpt) 
