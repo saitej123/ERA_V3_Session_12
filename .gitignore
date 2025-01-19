@@ -7,3 +7,5 @@ wandb/
 !checkpoint_6000.pt
 .DS_Store
 CodeFiles/
+output.log
+wandb_export_2025-01-19T14_02_01.235+05_30.csv
