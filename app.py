@@ -1,4 +1,9 @@
-import gradio as gr
+import gradio.components as gr_components
+import gradio.themes as gr_themes
+from gradio.blocks import Blocks
+from gradio.helpers import Examples
+from gradio.components.markdown import Markdown
+from gradio.layouts import Row, Column
 import torch
 import tiktoken
 from train import GPT, ModelConfig
@@ -8,13 +13,14 @@ def load_model():
     config = ModelConfig()
     model = GPT(config)
     checkpoint = torch.load('checkpoint_6000.pt', map_location='cpu')
-    model.state_dict = checkpoint['model_state_dict']
+    model.load_state_dict(checkpoint['model_state_dict'])
     model.eval()
     return model
 
 # Cache the model to avoid reloading
 MODEL = load_model()
 TOKENIZER = tiktoken.get_encoding("gpt2")
+VOCAB_SIZE = TOKENIZER.n_vocab
 
 def generate_text(
     prompt: str,
@@ -30,18 +36,20 @@ def generate_text(
             input_ids,
             max_new_tokens=max_length,
             temperature=temperature,
-            top_k=top_k
+            top_k=min(top_k, VOCAB_SIZE)
         )[0]
     
-    return TOKENIZER.decode(output_ids.tolist())
+    # Filter out invalid tokens
+    valid_tokens = [token for token in output_ids.tolist() if token < VOCAB_SIZE]
+    return TOKENIZER.decode(valid_tokens)
 
 # Create a more modern Gradio interface using Blocks
-with gr.Blocks(
+with Blocks(
     title="Shakespeare GPT",
-    theme=gr.themes.Soft(),
+    theme=gr_themes.Soft(),
     css=".container { max-width: 800px; margin: auto; }"
 ) as demo:
-    gr.Markdown(
+    Markdown(
         """
         # 🎭 Shakespeare GPT
         
@@ -51,16 +59,16 @@ with gr.Blocks(
         """
     )
     
-    with gr.Row():
-        with gr.Column(scale=2):
-            prompt = gr.Textbox(
+    with Row():
+        with Column(scale=2):
+            prompt = gr_components.Textbox(
                 label="Your Prompt",
                 placeholder="Enter your prompt here... (e.g. 'ROMEO: ')",
                 lines=3
             )
             
-            with gr.Row():
-                max_length = gr.Slider(
+            with Row():
+                max_length = gr_components.Slider(
                     minimum=10,
                     maximum=500,
                     value=200,
@@ -68,7 +76,7 @@ with gr.Blocks(
                     label="Maximum Length",
                     info="Number of tokens to generate"
                 )
-                temperature = gr.Slider(
+                temperature = gr_components.Slider(
                     minimum=0.1,
                     maximum=2.0,
                     value=0.7,
@@ -76,7 +84,7 @@ with gr.Blocks(
                     label="Temperature",
                     info="Higher = more creative, Lower = more focused"
                 )
-                top_k = gr.Slider(
+                top_k = gr_components.Slider(
                     minimum=1,
                     maximum=100,
                     value=50,
@@ -85,17 +93,17 @@ with gr.Blocks(
                     info="Number of tokens to sample from"
                 )
             
-            generate_btn = gr.Button("Generate", variant="primary")
+            generate_btn = gr_components.Button("Generate", variant="primary")
         
-        with gr.Column(scale=3):
-            output = gr.Textbox(
+        with Column(scale=3):
+            output = gr_components.Textbox(
                 label="Generated Text",
                 lines=12,
                 show_copy_button=True
             )
     
     # Example prompts
-    gr.Examples(
+    Examples(
         examples=[
             ["ROMEO: My love for Juliet burns like", 200, 0.7, 50],
             ["HAMLET: To be, or not to be, that is", 200, 0.7, 50],
@@ -116,7 +124,7 @@ with gr.Blocks(
         outputs=output
     )
     
-    gr.Markdown(
+    Markdown(
         """
         ### About
         
