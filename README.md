@@ -17,7 +17,12 @@ A decoder-only transformer model (124M parameters) trained on Shakespeare's work
 
 ## Training Results
 
-![Training Loss](https://i.imgur.com/YOUR_IMAGE_ID.png)
+![Training Loss](trainloss.png)
+
+Experiments🧮
+
+
+![All Runs Summary](loss_2.png)
 
 - Best training loss: 0.064
 - Training environment: Lightning.ai Studio with NVIDIA L40S GPU
@@ -90,6 +95,10 @@ The script saves:
 - Regular checkpoints every 1000 iterations in `checkpoint_{iter}.pt`
 - Best model based on validation loss in `best_model.pt`
 
+## Final model
+
+- `checkpoint_3000.pt`  (model weights accessible in lightning.ai studio)
+
 ## Hugging Face Spaces Deployment
 
 1. Create a new Space on Hugging Face:
@@ -102,7 +111,7 @@ The script saves:
    - `train.py`: Model architecture and training code
    - `app.py`: Gradio interface for text generation
    - `requirements.txt`: Dependencies
-   - `best_model.pt`: Your trained model checkpoint
+   - `checkpoint_3000.pt`: Your trained model checkpoint
 
 3. The Gradio app provides:
    - Interactive text generation interface
@@ -113,8 +122,7 @@ The script saves:
    - Example prompts from Shakespeare's works
    - Real-time text generation
 
-4. The app will automatically deploy and be available at:
-   `https://huggingface.co/spaces/[YOUR_USERNAME]/[SPACE_NAME]`
+
 
 ## Links
 
