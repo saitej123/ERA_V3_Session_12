@@ -24,7 +24,7 @@ class ModelConfig:
 
 @dataclass
 class TrainConfig:
-    batch_size: int = 64
+    batch_size: int = 48
     gradient_accumulation_steps: int = 1
     learning_rate: float = 6e-4
     max_iters: int = 10000
